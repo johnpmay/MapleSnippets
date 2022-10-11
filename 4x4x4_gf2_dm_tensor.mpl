@@ -7,9 +7,12 @@ B:=Matrix(4, 4, [[B_1_1,B_1_2,B_1_3,B_1_4],[B_2_1,B_2_2,B_2_3,B_2_4],[B_3_1,B_3_
 C:=Matrix(4, 4, [[C_1_1,C_1_2,C_1_3,C_1_4],[C_2_1,C_2_2,C_2_3,C_2_4],[C_3_1,C_3_2,C_3_3,C_3_4],[C_4_1,C_4_2,C_4_3,C_4_4]]):
 
 # generated from the Tensor below with
-# tmp := seq(LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,1],Tensor)).A)*LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,2],Tensor)).B)*LinearAlgebra:-Transpose(op([1,i,1,3],Tensor)),i=1..47):
+# tmp := seq(LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,1],Tensor)).A)
+#           *LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,2],Tensor)).B)
+#           *LinearAlgebra:-Transpose(op([1,i,1,3],Tensor)),
+#        i=1..47):
 # MUL := [seq((cat(`m_`,i)=convert(tmp[i],set)[2]),i=1..47)];
-# ADD := [seq(seq(cat(`C_`,i,`_`,j)=add(ifelse(MULT[k][i,j]<>0,cat(`m_`,k),0),k=1..47),j=1..4),i=1..4)];
+# ADD := [seq(seq(cat(`C_`,i,`_`,j)=add(ifelse(tmp[k][i,j]<>0,cat(`m_`,k),0),k=1..47),j=1..4),i=1..4)];
 
 MUL := [
 m_1  =  A_1_3*B_3_1,
@@ -283,6 +286,9 @@ Triad([
 ]);
 
 # Check
-map(expand,A.B-add(LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,1],Tensor)).A)*LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,2],Tensor)).B)*LinearAlgebra:-Transpose(op([1,i,1,3],Tensor)),i=1..47)) mod 2;
-
-
+map(expand,
+    A.B - add( LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,1],Tensor)).A)
+              *LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,2],Tensor)).B)
+              *LinearAlgebra:-Transpose(op([1,i,1,3],Tensor))
+          ,i=1..47)
+    ) mod 2;
