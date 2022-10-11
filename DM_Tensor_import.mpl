@@ -1,3 +1,5 @@
+# download these files from https://github.com/deepmind/alphatensor/tree/main/algorithms
+
 filename := "factorizations_f2.npz";
 #filename := "factorizations_r.npz";
 
@@ -25,6 +27,7 @@ for idx in sort([indices(factorizations)]) do
 
     (u,v,w) := factorizations[idx[]][];
     rank := numelems(u[1]);
+    print(idx[]=rank);
 
 # this is the Tensor format used by FMM https://fmm.univ-lille.fr/
     Tensor := TriadSet([seq(Triad([
