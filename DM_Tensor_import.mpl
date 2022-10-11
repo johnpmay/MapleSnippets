@@ -1,23 +1,29 @@
-# download these files from https://github.com/deepmind/alphatensor/tree/main/algorithms
-
-filename := "factorizations_f2.npz";
+#filename := "factorizations_f2.npz";
 #filename := "factorizations_r.npz";
+#filename := "factorizations_f2.mpl";
+filename := "factorizations_r.mpl";
 
 # use Maple's python to unpack the npz
-Python:-Import("numpy");
-import := Python:-EvalString(cat("dict( numpy.load('", filename, "',allow_pickle=True))")):
-factorizations := convert(import, table):
+if filename[-3..-1] = "npz" then
+    Python:-Import("numpy");
+    import := Python:-EvalString(cat("dict( numpy.load('", filename, "',allow_pickle=True))")):
+    factorizations := convert(import, table):
+else
+    read filename;
+end if;
 
 for idx in sort([indices(factorizations)]) do
     print(idx);
-    tmp := convert(factorizations[idx[]], Array);
-    if type(tmp[1], python) then
-        tmp := convert(tmp, list);
-        tmp := map(convert, tmp, Array);
-    else
-        tmp := [tmp[1,...,...], tmp[2,...,...], tmp[3,...,...]];
+    if filename[-3..-1] = "npz" then
+        tmp := convert(factorizations[idx[]], Array);
+        if type(tmp[1], python) then
+            tmp := convert(tmp, list);
+            tmp := map(convert, tmp, Array);
+        else
+            tmp := [tmp[1,...,...], tmp[2,...,...], tmp[3,...,...]];
+        end if;
+        factorizations[idx[]] := tmp;
     end if;
-    factorizations[idx[]] := tmp;
 
     dims := sscanf(idx[], "%d,%d,%d");
 
@@ -43,7 +49,7 @@ for idx in sort([indices(factorizations)]) do
         *LinearAlgebra:-Transpose(op([1,i,1,3],Tensor)),
         i=1..rank);
 
-    if filename[-6..-1] = "f2.npz" then
+    if filename[-6..-5] = "f2" then
         print(idx=(map(expand,A.B - chk) mod 2));
     else
         print(idx=(map(expand,A.B - chk) ));
@@ -73,10 +79,15 @@ for idx in sort([indices(factorizations)]) do
     #print(ADD);
 
 #check
-    if filename[-6..-1] = "f2.npz" then
+    if filename[-6..-5] = "f2" then
         print(idx=(map(expand,subs(subs(MUL,ADD),C-A.B)) mod 2));
     else
         print(idx=(map(expand,subs(subs(MUL,ADD),C-A.B))));
     end if;
 
 end do:
+
+
+if filename[-3..-1] = "npz" then
+    save factorizations, cat(filename[1..-4],"mpl");
+end if;
