@@ -1,7 +1,20 @@
-#file := "s47.exp"; n:=4;
-file := "s95.exp"; n := 5;
+# This Maple script verifies the GF2 Matrix multiplication formulas of
+# Kauers and Moosbauer https://arxiv.org/pdf/2210.04045.pdf
 
-filestring := FileTools:-Text:-ReadFile(file);
+# use these for local files
+#file := "s47.exp"; n:=4;
+#file := "s95.exp"; n := 5;
+#filestring := FileTools:-Text:-ReadFile(file);
+
+#filestring := URL:-Get("http://www.algebra.uni-linz.ac.at/people/mkauers/matrix-mult/s47.exp"); n := 4;
+filestring := URL:-Get("http://www.algebra.uni-linz.ac.at/people/mkauers/matrix-mult/s95.exp"); n := 5;
+if type(filestring, Array) then
+    filestring := StringTools:-FromByteArray(filestring);
+end if;
+
+# code to parse the exp file into the format used by
+# the FMM catalog https://fmm.univ-lille.fr/
+
 prods := map(parse,StringTools:-Split(StringTools:-Trim(filestring), "\n"));
 
 prodtotriad := proc(expr::`*`, n)
@@ -27,6 +40,7 @@ end proc:
 Tensor := TriadSet([seq(Triad(prodtotriad(p, n)),p in prods)]);
 
 dims := [n,n,n];
+idx := cat(n,",",n,",",n);
 rank := nops(prods);
 A := Matrix(dims[1], dims[2], (i,j)->cat(`a__`,i,`,`,j));
 B := Matrix(dims[2], dims[3], (i,j)->cat(`b__`,i,`,`,j));
@@ -37,7 +51,7 @@ chk := add(
     *LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,2],Tensor)).B)
     *LinearAlgebra:-Transpose(op([1,i,1,3],Tensor)),
     i=1..rank):
-
+print("tensor check");
 print(idx=(map(expand,A.B - chk) mod 2));
 
 tmp := seq(
@@ -60,5 +74,5 @@ ADD := [seq(seq(
 
 print(MUL);
 print(ADD);
-
+print("formula check");
 print(idx=(map(expand,subs(subs(MUL,ADD),C-A.B)) mod 2));
