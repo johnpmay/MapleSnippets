@@ -1,7 +1,7 @@
 #filename := "factorizations_f2.npz";
 #filename := "factorizations_r.npz";
-#filename := "factorizations_f2.mpl";
-filename := "factorizations_r.mpl";
+filename := "factorizations_f2.mpl";
+#filename := "factorizations_r.mpl";
 
 # use Maple's python to unpack the npz
 if filename[-3..-1] = "npz" then
@@ -77,6 +77,10 @@ for idx in sort([indices(factorizations)]) do
 
     #print(MUL);
     #print(ADD);
+
+    print(`*`=nops(MUL));
+    print(`+` = `+`(seq(nops(rhs(e))-1, e in ADD))
+              + `+`(seq(nops(op(1,rhs(e)))+nops(op(2,rhs(e)))-2, e in MUL)) );
 
 #check
     if filename[-6..-5] = "f2" then

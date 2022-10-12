@@ -74,5 +74,9 @@ ADD := [seq(seq(
 
 print(MUL);
 print(ADD);
+
+print(`*`=nops(MUL));
+print(`+`=`+`(seq(nops(rhs(e))-1, e in ADD)) + `+`(seq(nops(op(1,rhs(e)))+nops(op(2,rhs(e)))-2, e in MUL)) );
+
 print("formula check");
 print(idx=(map(expand,subs(subs(MUL,ADD),C-A.B)) mod 2));
