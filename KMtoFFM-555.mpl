@@ -1,16 +1,8 @@
 # This Maple script verifies the GF2 Matrix multiplication formulas of
 # Kauers and Moosbauer https://arxiv.org/pdf/2210.04045.pdf
 
-# use these for local files
-#file := "s47.exp"; n:=4;
-#file := "s95.exp"; n := 5;
-#filestring := FileTools:-Text:-ReadFile(file);
-
-#filestring := URL:-Get("http://www.algebra.uni-linz.ac.at/people/mkauers/matrix-mult/s47.exp"); n := 4;
-filestring := URL:-Get("http://www.algebra.uni-linz.ac.at/people/mkauers/matrix-mult/s95.exp"); n := 5;
-if type(filestring, Array) then
-    filestring := StringTools:-FromByteArray(filestring);
-end if;
+filestring := Import("https://raw.githubusercontent.com/jakobmoosbauer/flips/main/solutions/555-97-mod0.exp", 'format'="text");
+n := 5;
 
 # code to parse the exp file into the format used by
 # the FMM catalog https://fmm.univ-lille.fr/
@@ -55,7 +47,7 @@ chk := add(
     *LinearAlgebra:-Transpose(op([1,i,1,3],Tensor)),
     i=1..rank):
 print("tensor check");
-print(idx=(map(expand,A.B - chk) mod 2));
+print(idx=(map(expand,A.B - chk)));
 
 tmp := seq(
     LinearAlgebra:-Trace(LinearAlgebra:-Transpose(op([1,i,1,1],Tensor)).A)
@@ -82,4 +74,4 @@ print(`*`=nops(MUL));
 print(`+`=`+`(seq(nops(rhs(e))-1, e in ADD)) + `+`(seq(nops(op(1,rhs(e)))+nops(op(2,rhs(e)))-2, e in MUL)) );
 
 print("formula check");
-print(idx=(map(expand,subs(subs(MUL,ADD),C-A.B)) mod 2));
+print(idx=(map(expand,subs(subs(MUL,ADD),C-A.B))));
