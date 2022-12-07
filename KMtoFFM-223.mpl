@@ -1,9 +1,8 @@
 # This Maple script verifies the GF2 Matrix multiplication formulas of
 # Kauers and Moosbauer https://arxiv.org/pdf/2210.04045.pdf
 
-filestring := Import("https://raw.githubusercontent.com/jakobmoosbauer/flips/main/solutions/555-97-mod0.exp", 'format'="text");
-n := 5;
-dims := [n,n,n];
+filestring := Import("https://raw.githubusercontent.com/jakobmoosbauer/flips/main/solutions/223-11-mod0.exp", 'format'="text");
+dims := [2,2,3];
 
 # code to parse the exp file into the format used by
 # the FMM catalog https://fmm.univ-lille.fr/
