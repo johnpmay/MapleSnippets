@@ -1,6 +1,6 @@
 # Fast Matrix Multiplication
 
-This is a collection of snippets related to verifying small matrix multiplication formulas published in 2022, and provides conversions of them to the format used by THE FMM catalog at https://fmm.univ-lille.fr/
+This is a collection of snippets related to verifying small matrix multiplication formulas published in 2022, and provides conversions of them to the format used by The FMM catalog at https://fmm.univ-lille.fr/
 
 ## DeepMind AlphaTensor
 The directory [alphatensor](alphatensor) contains Maple scripts to verify the matrix
