@@ -77,6 +77,46 @@ local colors, polys, out, i, l;
 end proc; # RenderTiling
 
 
+export Mosaic := proc(tilingtype, imagefile, tileoptions:=[])
+local l, c2color, i;
+local obj := Tilings:-TilingObject(tilingtype, tileoptions);
+local tiles := [ seq(
+        convert(op(1,plottools:-translate(
+        plottools:-rotate(
+            plottools:-polygon(obj:-shapes[l[1]])
+         ,l[4] ), (1. *~ l[3])[])),listlist)
+            , l in obj:-locations) ];
+local C := map(centroid,tiles);
+local XX := [min,max](C[..,1]);
+local YX := [min,max](C[..,2]);
+
+local img := ImageTools:-Read(imagefile);
+    img := ImageTools:-Scale( ImageTools:-Rotate(img,-Pi/2.), 1..200,1..200);
+
+    c2color := proc(c,img)
+    local fx, tx, fy, ty;
+    local w := ImageTools:-Width(img);
+    local h := ImageTools:-Height(img);
+        (fx,tx) := (frac,trunc)((c[1] - XX[1])/(XX[2]-XX[1]) * (h-2)+1); 
+        (fy,ty) := (frac,trunc)((c[2] - YX[1])/(YX[2]-YX[1]) * (w-2)+1);
+        return ColorTools:-Color("RGB",map(clamp,convert((1-sqrt(fx^2+fy^2))*img[tx,ty] + sqrt(fx^2+fy^2)*img[tx+1,ty+1],list),0,1));
+    end proc: # c2color
+
+    return plots:-display(seq(plottools:-polygon(tiles[i],color=c2color(C[i],img)), i=1..nops(tiles)),axes=none, _rest);
+
+end proc;
+
+local clamp := proc(x,a,b) min(max(a,x),b) end proc:
+
+local centroid := proc(p)
+local i;
+local t := ComputationalGeometry:-PolygonTriangulation(p);
+local c := map(s -> 1/3*add(convert(p[s], listlist)[]), t);
+local a := map(s -> 0.5*LinearAlgebra:-Determinant(<Matrix(p[s]) | <1., 1., 1.>>), t);
+    return add(seq(c[i]*a[i], i = 1 .. nops(t)))/add(a);
+end proc:
+
+
 local SquareTiling := proc(w::posint:=8,l::posint:=8)
 local i,j;
 
